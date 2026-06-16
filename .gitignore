@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Build outputs
+build/
+build_gui/
+dist/
+*.spec
+
+# Local Telegram sessions and secrets
+*.session
+*.session-journal
+.env
+*.env
+
+# Local/private generated workspace
+outputs/
+
+# Reports and downloaded data
+telegram_admin_exports/
+admin_gui/
+*.sqlite
+*.sqlite-*
+*.csv
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

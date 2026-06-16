@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Telegram Admin GUI User Guide</title>
+<style>
+body {
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+  margin: 0;
+  background: #eef3f7;
+  color: #0f172a;
+  line-height: 1.55;
+}
+header {
+  background: #17212b;
+  color: #fff;
+  padding: 20px 28px;
+}
+main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 22px 16px 52px;
+}
+h1, h2, h3 {
+  line-height: 1.25;
+}
+h2 {
+  margin-top: 34px;
+  padding-top: 8px;
+  border-top: 1px solid #cbd5e1;
+}
+code, pre {
+  font-family: Consolas, "Courier New", monospace;
+}
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 12px;
+  border-radius: 8px;
+  overflow: auto;
+}
+.note {
+  background: #fff;
+  border: 1px solid #d6e1eb;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+li {
+  margin: 5px 0;
+}
+</style>
+</head>
+<body>
+<header>
+<h1>Telegram Admin GUI User Guide</h1>
+<div>Step-by-step instructions for authorized group administrators</div>
+</header>
+<main>
+<p class="note">Use this app only in groups where you have permission to administer content.</p>
+
+<h2>1. Open the App</h2>
+<ol>
+<li>Open the folder where the app was provided.</li>
+<li>Double-click the app.</li>
+<li>Wait for the <strong>Telegram Admin Tool</strong> window to appear.</li>
+</ol>
+
+<h2>2. Fill In the Fields</h2>
+<ul>
+<li><strong>Admin user ID:</strong> the Telegram user ID for the admin account.</li>
+<li><strong>Group ID:</strong> the group where the admin account has permission to operate.</li>
+<li><strong>Target user ID:</strong> the account you want to search, review, or verify before deletion.</li>
+<li><strong>Phone:</strong> the Telegram phone number for the admin account in international format.</li>
+<li><strong>API ID / API hash:</strong> the Telegram API credentials assigned to the app.</li>
+<li><strong>Two-step verification password:</strong> the account password if two-step verification is enabled.</li>
+<li><strong>Batch size:</strong> the number of messages read per page. Reduce this value if Telegram disconnects often.</li>
+<li><strong>Output folder:</strong> where reports, archives, and downloaded media should be saved.</li>
+</ul>
+
+<h2>3. First Login</h2>
+<ol>
+<li>Click an action such as <strong>Search Target Messages</strong>.</li>
+<li>If Telegram asks for a login code, enter the code received by the admin account.</li>
+<li>If Telegram asks for two-step verification, enter the account password.</li>
+<li>After login, a local session is saved so future launches usually do not need another code.</li>
+</ol>
+
+<h2>4. Search Target Messages</h2>
+<ol>
+<li>Confirm the <strong>Target user ID</strong>.</li>
+<li>Click <strong>Search Target Messages</strong>.</li>
+<li>Found messages appear in the detected messages table.</li>
+<li>Use the message ID column for previewing or deleting.</li>
+</ol>
+<p>The app also saves a search report in the selected output folder.</p>
+
+<h2>5. Preview a Message</h2>
+<ol>
+<li>Select a row in the message table, or type a message ID.</li>
+<li>Click <strong>Preview Message</strong>.</li>
+<li>Read the sender, date, media type, and text preview in the status screen.</li>
+</ol>
+
+<h2>6. Delete a Message</h2>
+<ol>
+<li>Search for the target account's messages first.</li>
+<li>Select the message row.</li>
+<li>Click <strong>Preview Message</strong> and confirm it is correct.</li>
+<li>Click <strong>Delete Message</strong>.</li>
+<li>Confirm the warning.</li>
+<li>Type exactly <code>DELETE</code>.</li>
+<li>The app verifies the sender, deletes, then asks Telegram again whether the message is gone.</li>
+</ol>
+<p>If the sender does not match the target user, the app refuses to delete by default.</p>
+
+<h2>7. Archive Text Chat</h2>
+<ol>
+<li>Click <strong>Archive Text Chat</strong>.</li>
+<li>Wait for the scan.</li>
+<li>Open the saved report from the selected output folder.</li>
+</ol>
+<p>The archive includes text messages and message metadata.</p>
+
+<h2>8. Download Media</h2>
+<ol>
+<li>Choose whether to check <strong>Only target media</strong>.</li>
+<li>Click <strong>Download Media</strong>.</li>
+<li>Watch progress in the status screen.</li>
+</ol>
+<p>If <strong>Only target media</strong> is checked, the app downloads media only from the target account. Otherwise, it downloads media from all visible messages in the group.</p>
+
+<h2>9. Stop a Long Task</h2>
+<p>Click <strong>Stop Current Task</strong>. The app stops after the current Telegram page or media file finishes.</p>
+
+<h2>10. Understanding Output</h2>
+<p>The app can create searchable message reports, readable chat archives, downloaded media folders, and media manifests for review.</p>
+
+<h2>11. Troubleshooting</h2>
+<ul>
+<li><strong>Login code prompt:</strong> enter the code received by the admin account.</li>
+<li><strong>Two-step verification prompt:</strong> enter the account password.</li>
+<li><strong>Wrong logged-in account:</strong> close the app, remove the saved local session if needed, and log in with the correct admin account.</li>
+<li><strong>No messages found:</strong> check the target user ID, group ID, and visible group history.</li>
+<li><strong>Telegram disconnects:</strong> reduce the batch size and run the action again.</li>
+<li><strong>Delete fails:</strong> the account may lack permission, the message may already be deleted, or Telegram may not allow deleting that message.</li>
+</ul>
+
+<h2>12. Recommended Safe Workflow</h2>
+<ol>
+<li>Enter the admin user ID, group ID, and target user ID.</li>
+<li>Click <strong>Search Target Messages</strong>.</li>
+<li>Select the message.</li>
+<li>Click <strong>Preview Message</strong>.</li>
+<li>Confirm it is the correct message.</li>
+<li>Click <strong>Delete Message</strong>.</li>
+<li>Type <code>DELETE</code>.</li>
+<li>Check the confirmation line in the status screen.</li>
+</ol>
+</main>
+</body>
+</html>
