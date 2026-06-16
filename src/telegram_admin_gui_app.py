@@ -36,6 +36,7 @@ from telethon.utils import get_peer_id
 
 
 SCRIPT_VERSION = "2026-06-16-admin-gui-v1"
+APP_CREDIT = "Built by Syn3xar"
 DEFAULT_API_ID = ""
 DEFAULT_API_HASH = ""
 DEFAULT_ADMIN_ID = ""
@@ -349,12 +350,13 @@ main{{max-width:1120px;margin:0 auto;padding:18px}}
 .msg{{background:#fff;border:1px solid #d6e1eb;border-radius:8px;margin:8px 0;padding:10px}}
 .meta{{color:#64748b;font-size:13px}}
 .text{{white-space:pre-wrap;line-height:1.45}}
+.credit{{margin-top:24px;color:#64748b;font-size:13px;text-align:right}}
 </style></head><body><main><h1>{html.escape(title)}</h1>
 """
 
 
 def html_footer() -> str:
-    return "</main></body></html>\n"
+    return f'<div class="credit">{html.escape(APP_CREDIT)}</div></main></body></html>\n'
 
 
 async def search_target_messages(config: AppConfig, stop_event: threading.Event, emit) -> None:
@@ -565,7 +567,7 @@ async def delete_message(config: AppConfig, message_id: int, allow_any_sender: b
 class TelegramAdminGUI:
     def __init__(self, root: tk.Tk) -> None:
         self.root = root
-        self.root.title("Telegram Admin Tool")
+        self.root.title(f"Telegram Admin Tool - {APP_CREDIT}")
         self.root.geometry("1180x760")
         self.events: queue.Queue[tuple[str, Any]] = queue.Queue()
         self.worker: threading.Thread | None = None
@@ -583,9 +585,10 @@ class TelegramAdminGUI:
         self.message_id = tk.StringVar(value="")
         self.download_target_only = tk.BooleanVar(value=False)
         self.allow_any_sender = tk.BooleanVar(value=False)
-        self.status_text = tk.StringVar(value="Ready")
+        self.status_text = tk.StringVar(value=f"Ready - {APP_CREDIT}")
 
         self.build_ui()
+        self.log_line(APP_CREDIT)
         self.root.after(100, self.poll_events)
 
     def build_ui(self) -> None:
@@ -665,8 +668,12 @@ class TelegramAdminGUI:
         body.add(table_frame, weight=3)
         body.add(log_frame, weight=2)
 
-        status = ttk.Label(outer, textvariable=self.status_text, anchor="w")
-        status.pack(fill=tk.X, pady=(6, 0))
+        footer = ttk.Frame(outer)
+        footer.pack(fill=tk.X, pady=(6, 0))
+        status = ttk.Label(footer, textvariable=self.status_text, anchor="w")
+        status.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        credit = ttk.Label(footer, text=APP_CREDIT, anchor="e")
+        credit.pack(side=tk.RIGHT)
 
     def add_field(self, parent: ttk.Frame, label: str, variable: tk.StringVar, row: int, column: int, show: str | None = None) -> None:
         ttk.Label(parent, text=label).grid(row=row, column=column, sticky="w", padx=(0, 4), pady=4)
@@ -851,7 +858,7 @@ class TelegramAdminGUI:
 
 def main() -> None:
     if "--smoke-test" in sys.argv:
-        print(f"Telegram Admin GUI {SCRIPT_VERSION} OK")
+        print(f"Telegram Admin GUI {SCRIPT_VERSION} OK - {APP_CREDIT}")
         return
 
     root = tk.Tk()

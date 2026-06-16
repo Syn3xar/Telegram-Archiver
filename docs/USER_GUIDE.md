@@ -1,5 +1,7 @@
 # Telegram Admin GUI User Guide
 
+Built by Syn3xar.
+
 This guide explains how to use the Telegram admin GUI app.
 
 The app is intended for authorized group administrators who need to:

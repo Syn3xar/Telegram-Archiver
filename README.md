@@ -2,6 +2,8 @@
 
 Telegram Archiver is a Windows-friendly GUI tool for authorized Telegram group administrators.
 
+Built by Syn3xar.
+
 It can:
 
 - search messages sent by a target Telegram user ID
