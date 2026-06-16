@@ -19,7 +19,9 @@ if (-not (Test-Path $Requirements)) {
     "telethon>=1.36.0" | Set-Content -LiteralPath $Requirements -Encoding UTF8
 }
 
+python -m pip install --upgrade pip
 python -m pip install -r $Requirements
+python -m pip install pyinstaller
 
 python -m PyInstaller `
     --onefile `

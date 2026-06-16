@@ -45,12 +45,6 @@ Fill in the app fields:
 
 ## Build a Windows EXE
 
-Install PyInstaller:
-
-```powershell
-python -m pip install pyinstaller
-```
-
 Build:
 
 ```powershell
@@ -62,6 +56,26 @@ The executable is written to:
 ```text
 dist\TelegramAdminGUI.exe
 ```
+
+## Download a GitHub-Built EXE
+
+GitHub Actions builds the Windows executable automatically on pushes to `main` and when the workflow is run manually.
+
+To download it:
+
+1. Open the repository on GitHub.
+2. Go to **Actions**.
+3. Open the latest **Build Windows GUI EXE** run.
+4. Download the `TelegramAdminGUI-windows` artifact.
+
+To publish the executable as a GitHub Release asset, create and push a version tag:
+
+```powershell
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The release workflow attaches `TelegramAdminGUI.exe` to the tag release.
 
 ## User Guide
 
