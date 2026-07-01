@@ -74,6 +74,14 @@ Choose where reports, archives, and downloaded media should be saved.
 
 Use the `Browse` button if you want to choose a different folder.
 
+### Media Streams
+
+- `Total streams` limits all simultaneous media downloads. The recommended value is `4`.
+- `Small streams` limits files up to 20 MB. The recommended value is `4`.
+- `Large streams` limits files over 20 MB or with unknown size. The recommended value is `2`.
+
+The small and large values cannot exceed the total stream limit. Values from 1 to 20 are accepted.
+
 ## 3. First Login
 
 When you start an action for the first time, Telegram may ask for a login code.
@@ -169,20 +177,25 @@ Use this to download media from the group.
 
 1. Choose whether to check `Only target media`.
 2. Click `Download Media`.
-3. Watch the progress in the `Status and Text Screen`.
-4. The app saves files in the selected output folder.
+3. Wait while the app scans the visible group history and reports the queued media and remaining known size.
+4. Watch the overall progress bar for processed quantity, remaining quantity, and percentage.
+5. Watch each worker's file-level progress in the `Status and Text Screen`.
+6. The app saves files in a stable media folder inside the selected output folder.
 
 If `Only target media` is checked, the app downloads media only from the target account.
 
 If it is not checked, the app downloads media from all visible messages in the group.
 
 The app also saves a media manifest with message IDs, sender IDs, media types, and saved locations.
+When the task is run again, complete files are skipped. Temporary Telegram server errors, flood waits,
+and cancelled transfers are retried without ending the other workers. Files that still fail remain
+pending for a later run.
 
 ## 9. Stop a Long Task
 
 Use `Stop Current Task` if a scan is taking too long.
 
-The app stops after the current Telegram page or media file finishes.
+During a media run, active file transfers are cancelled cleanly and incomplete files are removed.
 
 It may not stop instantly, but it should stop cleanly.
 

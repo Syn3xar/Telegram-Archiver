@@ -9,7 +9,8 @@ It can:
 - search messages sent by a target Telegram user ID
 - show message IDs in a table
 - archive text-only chat to browser-readable reports
-- download media from visible group history
+- download media with resumable, bounded parallel workers
+- show an overall media progress bar with processed, remaining, and percentage values
 - preview a message by message ID
 - delete a message with sender verification and confirmation
 
@@ -43,7 +44,18 @@ Fill in the app fields:
 - API ID
 - API hash
 - Two-step verification password, if required
+- Total, small-file, and large-file stream limits
 - Output folder
+
+The recommended media settings are `4` total streams, `4` small-file
+streams, and `2` large/unknown-file streams. The downloader scans the visible
+group history first, reports the remaining known size, and then downloads into
+a stable media folder. Completed files are skipped on later runs.
+
+Temporary Telegram server errors, flood waits, and transfer cancellations are
+handled per worker. A failed item remains pending without ending the other
+downloads, and concurrency is reduced automatically when repeated failures
+occur.
 
 ## Build a Windows EXE
 

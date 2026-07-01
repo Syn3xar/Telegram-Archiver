@@ -76,6 +76,9 @@ li {
 <li><strong>API ID / API hash:</strong> the Telegram API credentials assigned to the app.</li>
 <li><strong>Two-step verification password:</strong> the account password if two-step verification is enabled.</li>
 <li><strong>Batch size:</strong> the number of messages read per page. Reduce this value if Telegram disconnects often.</li>
+<li><strong>Total streams:</strong> maximum simultaneous media downloads. The recommended value is 4.</li>
+<li><strong>Small streams:</strong> files up to 20 MB. The recommended value is 4.</li>
+<li><strong>Large streams:</strong> files over 20 MB or with unknown size. The recommended value is 2.</li>
 <li><strong>Output folder:</strong> where reports, archives, and downloaded media should be saved.</li>
 </ul>
 
@@ -127,12 +130,15 @@ li {
 <ol>
 <li>Choose whether to check <strong>Only target media</strong>.</li>
 <li>Click <strong>Download Media</strong>.</li>
-<li>Watch progress in the status screen.</li>
+<li>Wait while visible group history is scanned and the remaining known size is reported.</li>
+<li>Watch the overall progress bar for processed quantity, remaining quantity, and percentage.</li>
+<li>Watch the labelled file-level worker progress in the status screen.</li>
 </ol>
 <p>If <strong>Only target media</strong> is checked, the app downloads media only from the target account. Otherwise, it downloads media from all visible messages in the group.</p>
+<p>Media is saved in a stable folder. Complete files are skipped on later runs. Temporary server errors, flood waits, and cancelled transfers are retried per worker; an item that still fails remains pending without stopping the other downloads.</p>
 
 <h2>9. Stop a Long Task</h2>
-<p>Click <strong>Stop Current Task</strong>. The app stops after the current Telegram page or media file finishes.</p>
+<p>Click <strong>Stop Current Task</strong>. During media downloads, active transfers are cancelled cleanly and incomplete files are removed.</p>
 
 <h2>10. Understanding Output</h2>
 <p>The app can create searchable message reports, readable chat archives, downloaded media folders, and media manifests for review.</p>
