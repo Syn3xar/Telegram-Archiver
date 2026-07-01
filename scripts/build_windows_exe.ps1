@@ -24,6 +24,7 @@ python -m pip install -r $Requirements
 python -m pip install pyinstaller
 
 python -m PyInstaller `
+    --noconfirm `
     --onefile `
     --windowed `
     --clean `
