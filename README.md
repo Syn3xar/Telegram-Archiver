@@ -10,6 +10,7 @@ It can:
 - show message IDs in a table
 - archive text-only chat to browser-readable reports
 - download media with resumable, bounded parallel workers
+- show an overall media progress bar with processed, remaining, and percentage values
 - preview a message by message ID
 - delete a message with sender verification and confirmation
 

@@ -178,8 +178,9 @@ Use this to download media from the group.
 1. Choose whether to check `Only target media`.
 2. Click `Download Media`.
 3. Wait while the app scans the visible group history and reports the queued media and remaining known size.
-4. Watch each worker's progress in the `Status and Text Screen`.
-5. The app saves files in a stable media folder inside the selected output folder.
+4. Watch the overall progress bar for processed quantity, remaining quantity, and percentage.
+5. Watch each worker's file-level progress in the `Status and Text Screen`.
+6. The app saves files in a stable media folder inside the selected output folder.
 
 If `Only target media` is checked, the app downloads media only from the target account.
 

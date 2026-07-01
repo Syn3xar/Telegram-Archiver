@@ -36,7 +36,7 @@ from telethon.tl.types import Channel, Chat, Message
 from telethon.utils import get_peer_id
 
 
-SCRIPT_VERSION = "2026-07-01-admin-gui-v2-parallel"
+SCRIPT_VERSION = "2026-07-02-admin-gui-v3-progress"
 APP_CREDIT = "Built by Syn3xar"
 DEFAULT_API_ID = ""
 DEFAULT_API_HASH = ""
@@ -848,6 +848,7 @@ async def download_media(config: AppConfig, stop_event: threading.Event, emit) -
         )
         if not queued:
             emit("log", "No matching media was found.")
+            emit("media_progress", {"completed": 0, "total": 0, "remaining": 0, "percent": 100.0})
             return
 
         total_limit = config.parallel_downloads
@@ -855,6 +856,7 @@ async def download_media(config: AppConfig, stop_event: threading.Event, emit) -
         large_limit = min(config.parallel_large, total_limit)
         coordinator = MediaTransferCoordinator(total_limit, small_limit, large_limit, emit)
         manifest_lock = asyncio.Lock()
+        progress_lock = asyncio.Lock()
         small_queue: asyncio.Queue[tuple[Message, Path, int, str]] = asyncio.Queue()
         large_queue: asyncio.Queue[tuple[Message, Path, int, str]] = asyncio.Queue()
         large_threshold = 20 * 1024 * 1024
@@ -866,11 +868,16 @@ async def download_media(config: AppConfig, stop_event: threading.Event, emit) -
                 small_queue.put_nowait(item)
 
         stats = {"downloaded": 0, "skipped": 0, "failed": 0}
+        progress_state = {"completed": 0}
         manifest_exists = manifest_path.exists() and manifest_path.stat().st_size > 0
         emit(
             "log",
             f"Parallel capacity: {total_limit} total, {small_limit} small-file slots, "
             f"{large_limit} large/unknown-file slots. Adaptive backoff enabled.",
+        )
+        emit(
+            "media_progress",
+            {"completed": 0, "total": len(queued), "remaining": len(queued), "percent": 0.0},
         )
 
         with manifest_path.open("a", newline="", encoding="utf-8") as manifest_file:
@@ -963,6 +970,19 @@ async def download_media(config: AppConfig, stop_event: threading.Event, emit) -
                         work_queue.task_done()
                         if succeeded:
                             await coordinator.note_success()
+                        async with progress_lock:
+                            progress_state["completed"] += 1
+                            completed = progress_state["completed"]
+                            remaining = max(0, len(queued) - completed)
+                            emit(
+                                "media_progress",
+                                {
+                                    "completed": completed,
+                                    "total": len(queued),
+                                    "remaining": remaining,
+                                    "percent": (completed / len(queued)) * 100,
+                                },
+                            )
 
             small_workers = min(small_limit, small_queue.qsize())
             large_workers = min(large_limit, large_queue.qsize())
@@ -1062,6 +1082,8 @@ class TelegramAdminGUI:
         self.download_target_only = tk.BooleanVar(value=False)
         self.allow_any_sender = tk.BooleanVar(value=False)
         self.status_text = tk.StringVar(value=f"Ready - {APP_CREDIT}")
+        self.media_progress_text = tk.StringVar(value="Media progress: waiting")
+        self.media_progress_value = tk.DoubleVar(value=0.0)
 
         self.build_ui()
         self.log_line(APP_CREDIT)
@@ -1108,6 +1130,16 @@ class TelegramAdminGUI:
         ttk.Button(actions, text="Delete Message", command=self.delete_selected_message).grid(row=1, column=3, sticky="ew", padx=4, pady=3)
         ttk.Checkbutton(actions, text="Allow any sender", variable=self.allow_any_sender).grid(row=1, column=4, sticky="w", padx=4, pady=3)
         ttk.Button(actions, text="Stop Current Task", command=self.stop_current_task).grid(row=1, column=5, sticky="ew", padx=4, pady=3)
+
+        progress_frame = ttk.LabelFrame(outer, text="Media Download Progress", padding=8)
+        progress_frame.pack(fill=tk.X, pady=(10, 0))
+        ttk.Label(progress_frame, textvariable=self.media_progress_text, anchor="w").pack(fill=tk.X)
+        ttk.Progressbar(
+            progress_frame,
+            variable=self.media_progress_value,
+            maximum=100,
+            mode="determinate",
+        ).pack(fill=tk.X, pady=(4, 0))
 
         body = ttk.PanedWindow(outer, orient=tk.VERTICAL)
         body.pack(fill=tk.BOTH, expand=True, pady=(10, 0))
@@ -1208,6 +1240,9 @@ class TelegramAdminGUI:
         self.stop_event.clear()
         self.status_text.set(f"Running: {title}")
         self.log_line(f"Starting: {title}")
+        if title == "Download media":
+            self.media_progress_value.set(0.0)
+            self.media_progress_text.set("Media progress: scanning and building queue")
 
         def emit(kind: str, payload: Any) -> None:
             self.events.put((kind, payload))
@@ -1326,6 +1361,17 @@ class TelegramAdminGUI:
                 elif kind == "status":
                     self.status_text.set(str(payload))
                     self.log_line(str(payload))
+                elif kind == "media_progress":
+                    progress = dict(payload)
+                    completed = int(progress["completed"])
+                    total = int(progress["total"])
+                    remaining = int(progress["remaining"])
+                    percent = float(progress["percent"])
+                    self.media_progress_value.set(percent)
+                    self.media_progress_text.set(
+                        f"Media: {completed:,} / {total:,} processed | "
+                        f"{remaining:,} left | {percent:.1f}%"
+                    )
                 elif kind == "error":
                     self.log_line("ERROR: " + str(payload))
                     messagebox.showerror("Task failed", str(payload))
